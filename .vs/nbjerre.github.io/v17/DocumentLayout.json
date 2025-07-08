@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -54,6 +54,19 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "index.html",
+              "DocumentMoniker": "C:\\Users\\nbjer\\source\\repos\\nbjerre\\nbjerre.github.io\\index.html",
+              "RelativeDocumentMoniker": "index.html",
+              "ToolTip": "C:\\Users\\nbjer\\source\\repos\\nbjerre\\nbjerre.github.io\\index.html",
+              "RelativeToolTip": "index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-07-08T06:01:56.219Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
               "Title": ".gitignore",
               "DocumentMoniker": "C:\\Users\\nbjer\\source\\repos\\nbjerre\\nbjerre.github.io\\.gitignore",
@@ -72,9 +85,10 @@
               "RelativeDocumentMoniker": "style.css",
               "ToolTip": "C:\\Users\\nbjer\\source\\repos\\nbjerre\\nbjerre.github.io\\style.css",
               "RelativeToolTip": "style.css",
-              "ViewState": "AgIAANQBAAAAAAAAAAAAAP0BAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAANQBAAAAAAAAAAAAAA4CAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-07-03T17:39:52.625Z"
+              "WhenOpened": "2025-07-03T17:39:52.625Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -87,19 +101,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-07-03T17:39:52.506Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "index.html",
-              "DocumentMoniker": "C:\\Users\\nbjer\\source\\repos\\nbjerre\\nbjerre.github.io\\index.html",
-              "RelativeDocumentMoniker": "index.html",
-              "ToolTip": "C:\\Users\\nbjer\\source\\repos\\nbjerre\\nbjerre.github.io\\index.html",
-              "RelativeToolTip": "index.html",
-              "ViewState": "AgIAAIgAAAAAAAAAAAAAAKQAAABXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-07-03T17:39:51.749Z",
-              "EditorCaption": ""
             }
           ]
         }
