@@ -18,7 +18,32 @@
         <div class="picture-resume">
         <span><img src="IMG_20240128_151618.jpg" alt="" /></span>
         <svg version="1.1" viewBox="0 0 350 350">
-          <!-- ...SVG unchanged... -->
+            <defs>
+                <filter id="goo">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -9" result="cm" />
+                </filter>
+            </defs>
+
+
+            <g filter="url(#goo)">
+
+                <circle id="main_circle" class="st0" cx="171.5" cy="175.6" r="130" />
+
+                <circle id="circle" class="bubble0 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble1 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble2 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble3 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble4 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble5 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble6 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble7 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble8 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble9 st1" cx="171.5" cy="175.6" r="122.7" />
+                <circle id="circle" class="bubble10 st1" cx="171.5" cy="175.6" r="122.7" />
+
+            </g>
+            <!-- ...SVG unchanged... -->
         </svg>
       </div>
          <div class="clearfix"></div>
@@ -38,14 +63,14 @@
               <li>42728416</li>
               <li>nbjerregaard1@gmail.com</li>
               <li>6500 Vojens</li>
-              <li>32  r</li>
+              <li>32 år</li>
           </ul>
       </div>
       <div class="contact-presentation">
           <p>
               <span class="bold">Om mig</span> Som datamatikerstuderende med en baggrund som Flymekaniker, bringes der en omfattende teknisk ekspertise til bordet.
-              Jeg har opbygget f rdigheder inden for programmering i C#, SQL og Blazor,igennem min tid som datamatiker studerende.
-              Mit m l er at kombinere min tekniske baggrund med mine it-kompetencer og udvikle mig inden for softwareudvikling og systemdesign.
+              Jeg har opbygget færdigheder inden for programmering i C#, SQL og Blazor,igennem min tid som datamatiker studerende.
+              Mit mål er at kombinere min tekniske baggrund med mine it-kompetencer og udvikle mig inden for softwareudvikling og systemdesign.
 
           </p>
       </div>
@@ -73,10 +98,10 @@
                   <div class="experience-title">F-16 Turbine Engine Technician </div> <!-- JOB TITLE  -->
                   <div class="company-description">
                       <p>
-                          I rollen som F-16 Turbine Engine Technician har der v ret fokus p  vedligeholdelse og reparation af komplekse turbine motorer. Arbejdet har kr vet dybdeg ende teknisk viden samt evnen til at arbejde under pres. Kvalitet og sikkerhed er altafg rende, hvilket har medf rt en streng overholdelse af procedurer og standarder
+                          I rollen som F-16 Turbine Engine Technician har der v ret fokus p  vedligeholdelse og reparation af komplekse turbine motorer. Arbejdet har krævet dybdegående teknisk viden samt evnen til at arbejde under pres. Kvalitet og sikkerhed er altafgørende, hvilket har medført en streng overholdelse af procedurer og standarder
                       </p>
                       <ul class="job-points">
-                          <li>Udf rte omfattende inspektioner og vedligeholdelse af turbinemotorer.</li>
+                          <li>Udførte omfattende inspektioner og vedligeholdelse af turbinemotorer.</li>
                           <li>Anvendte fejlfindingsteknikker til hurtigt at identificere og l se problemer.</li>
                           <li>Arbejdet i et team for at sikre effektiv drift og sikkerhed i alle aktiviteter.</li>
                           <li>Test og opstart af F-16 fly og turbinemotorer.</li>
@@ -91,7 +116,7 @@
               <!-- UCL Datamatiker -->
               <div class="school-entry">
                   <div class="school-row">
-                      <span class="school-institution">UCL Erhvervsakademi og Professionsh jskole</span>
+                      <span class="school-institution">UCL Erhvervsakademi og Professionshøjskole</span>
                       <span class="school-title">- CS student</span>
                   </div>
                   <div class="time">Feb 2024 - Present</div>
@@ -127,21 +152,21 @@
 
           <div class="section-wrapper clearfix">
               <h3 class="section-title">Skills</h3>  <!-- DESCRIPTION OF YOUR HOBBIES -->
-              <p>
-                   	C#
-                   	SQL
-                   	Blazor
-                   	API
-                   	WPF
-                   	Scrum
-                   	Git
-                   	Teknisk forst else
-                   	vant til at arbejde i teams
-                   	milit r disciplin
-              </p>
+              <ul class="skills-list">
+                  <li>C#</li>
+                  <li>SQL</li>
+                  <li>Blazor</li>
+                  <li>API</li>
+                  <li>WPF</li>
+                  <li>Scrum</li>
+                  <li>Git</li>
+                  <li>Teknisk forståelse</li>
+                  <li>Vant til at arbejde i teams</li>
+                  <li>Militær disciplin</li>
+              </ul>
           </div>
           <div class="section-wrapper clearfix"> <h3 class="section-title">Privat liv </h3>  <!-- DESCRIPTION OF YOUR HOBBIES --> <p>
-    N r jeg har tid til overs s  bliver det brugt i sm  projekter omkring huset, IT har altid v ret den store interresse, og det kan man ogs  se herhjemme, med sm  servere, 3d printere og  Homeassistent automationer.
+    Når jeg har tid til overs, så  bliver det brugt i små projekter omkring huset, IT har altid været den store interresse, og det kan man også se herhjemme, med små servere, 3d printere og  Homeassistent automationer.
 </p> </div>
       </div>
   </section>
