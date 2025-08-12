@@ -1,0 +1,13 @@
+remote_theme: "mmistakes/minimal-mistakes@4.27.3"
+
+plugins:
+  - jekyll-include-cache
+
+title: "My Portfolio"
+email: your-email@example.com
+description: > # this means to ignore newlines until "baseurl:"
+  My portfolio site with weekly updates.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://nbjerre.github.io" # your site URL
+
+paginate: 5
