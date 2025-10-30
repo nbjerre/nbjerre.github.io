@@ -187,97 +187,19 @@
         <div class="clearfix"></div>
     </div>
     <!-- partial -->
-    <script src='//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js'></script>
-    <script src="./script.js"></script>
+    
+    
 
-    <!-- Dev-only hidden counter (local to this browser). Show by adding ?dev=1 or #dev to the URL, or set localStorage.devShow = '1' -->
-    <div id="dev-counter" style="display:none; position:fixed; bottom:12px; right:12px; background:rgba(0,0,0,0.78); color:#fff; padding:8px 10px; border-radius:6px; font-family: Arial, Helvetica, sans-serif; font-size:13px; z-index:9999;">
-        <div style="margin-bottom:6px;">Besøg (shared): <span id="dev-counter-all">0</span></div>
-        <div style="margin-bottom:8px;">Besøg (denne side): <span id="dev-counter-page">0</span></div>
-        <div style="text-align:right;">
-            <button id="dev-counter-reset" style="background:#ff4d4f;border:none;color:#fff;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:12px;">Nulstil</button>
-        </div>
-    </div>
 
     <script>
-        (function () {
-            // === CONFIGURATION ===
-            const workspace = 'nbjerres-team-1469';
-            const apiKey = 'ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf'; // <-- Replace with your real API key
-            const counterName = 'cv_v1_' + (location.pathname || '/').replace(/[^a-zA-Z0-9-_\.]/g, '_');
-            const baseUrl = `https://api.counterapi.dev/v2/${workspace}/hit`;
-
-            // === DEV PANEL LOGIC ===
-            const show = (new URLSearchParams(location.search).get('dev') === '1') ||
-                location.hash === '#dev' ||
-                (localStorage.getItem('devShow') === '1');
-
-            function showPanel(value, errMsg) {
-                if (!show) return;
-                const el = document.getElementById('dev-counter');
-                if (!el) return;
-                el.style.display = 'block';
-                document.getElementById('dev-counter-all').textContent = value ?? '—';
-                document.getElementById('dev-counter-page').textContent = value ?? '—';
-                let errEl = document.getElementById('dev-counter-err');
-                if (!errEl) {
-                    errEl = document.createElement('div');
-                    errEl.id = 'dev-counter-err';
-                    errEl.style.color = '#f8d7da';
-                    errEl.style.fontSize = '11px';
-                    errEl.style.marginTop = '6px';
-                    el.appendChild(errEl);
-                }
-                errEl.textContent = errMsg ? ('Fejl: ' + errMsg) : '';
+        fetch('https://api.counterapi.dev/v2/nbjerres-team-1469/hit/up', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf',
+                'Content-Type': 'application/json'
             }
-
-            // === INCREMENT COUNTER ===
-            fetch(`${baseUrl}/up`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + apiKey,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name: counterName })
-            })
-                .then(r => r.json())
-                .then(data => {
-                    // After increment, get the value
-                    fetch(`${baseUrl}?name=${encodeURIComponent(counterName)}`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + apiKey
-                        }
-                    })
-                        .then(r => r.json())
-                        .then(data => {
-                            showPanel(data.value);
-                        })
-                        .catch(err => {
-                            showPanel(null, err.message);
-                        });
-                })
-                .catch(err => {
-                    showPanel(null, err.message);
-                });
-
-            // === RESET BUTTON ===
-            document.addEventListener('click', e => {
-                if (e.target && e.target.id === 'dev-counter-reset') {
-                    if (!confirm('Nulstil tæller for denne side til 0?')) return;
-                    fetch(`${baseUrl}/reset`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': 'Bearer ' + apiKey,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ name: counterName })
-                    })
-                        .then(() => showPanel(0))
-                        .catch(err => showPanel(null, err.message));
-                }
-            });
-        })();
+            // No body needed for default counter
+        });
     </script>
 
 
