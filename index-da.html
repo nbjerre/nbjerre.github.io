@@ -199,22 +199,24 @@
             <script>
             (function(){
             try {
-                var namespace = 'nbjerre_cv_counter_v1';
-                var path = location.pathname.replace(/[^a-zA-Z0-9-_\.]/g, '_') || 'home';
-                var key = namespace + '_' + path;
-                var url = 'https://api.countapi.xyz/hit/' + key;
+                const namespace = 'nbjerre_cv_v1';
+                const path = (location.pathname || '/').replace(/[^a-zA-Z0-9-_\.]/g, '_');
+                const key = namespace + '_' + path;
+                const url = `https://counterapi.dev/api/${key}/hit`;
 
-                var show = (new URLSearchParams(location.search).get('dev') === '1') ||
-                        location.hash === '#dev' ||
-                        (localStorage.getItem('devShow') === '1');
+                // Show developer box only when ?dev=1 or localStorage.devShow=1
+                const show = (new URLSearchParams(location.search).get('dev') === '1') ||
+                            location.hash === '#dev' ||
+                            (localStorage.getItem('devShow') === '1');
 
-                function setPanel(value, errMsg) {
+                function showPanel(value, errMsg) {
                 if (!show) return;
-                var el = document.getElementById('dev-counter');
+                const el = document.getElementById('dev-counter');
+                if (!el) return;
                 el.style.display = 'block';
                 document.getElementById('dev-counter-all').textContent = value ?? '—';
                 document.getElementById('dev-counter-page').textContent = value ?? '—';
-                var errEl = document.getElementById('dev-counter-err');
+                let errEl = document.getElementById('dev-counter-err');
                 if (!errEl) {
                     errEl = document.createElement('div');
                     errEl.id = 'dev-counter-err';
@@ -228,17 +230,34 @@
 
                 fetch(url)
                 .then(r => r.json())
-                .then(d => {
-                    if (d && typeof d.value !== 'undefined') setPanel(d.value);
-                    else setPanel(null, 'No value returned');
+                .then(data => {
+                    if (data && typeof data.count !== 'undefined') {
+                    showPanel(data.count);
+                    } else {
+                    showPanel(null, 'no count returned');
+                    }
                 })
-                .catch(err => setPanel(null, err.message));
+                .catch(err => {
+                    console.warn('CounterAPI.dev fetch failed', err);
+                    showPanel(null, err.message);
+                });
+
+                // Optional reset button (for local dev view)
+                document.addEventListener('click', e => {
+                if (e.target && e.target.id === 'dev-counter-reset') {
+                    if (!confirm('Nulstil tæller for denne side til 0?')) return;
+                    fetch(`https://counterapi.dev/api/${key}/reset`)
+                    .then(() => showPanel(0))
+                    .catch(err => showPanel(null, err.message));
+                }
+                });
 
             } catch (e) {
                 console.warn('Counter error', e);
             }
             })();
             </script>
+
 
 </body>
 </html>
