@@ -156,7 +156,13 @@
               </div>
           </div>
 
-
+          <script>
+              const img = new Image();
+              img.src = "https://api.counterapi.dev/v2/nbjerres-team-1469/hit/up?token=ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf";
+              img.onload = () => console.log('Counter incremented!');
+              img.onerror = () => console.error('Failed to increment counter');
+              document.body.appendChild(img); // hidden but can append if needed
+          </script>
 
 
           <div class="section-wrapper clearfix">
@@ -174,12 +180,14 @@
                   <li>Military discipline</li>
                   <li>Machine Learning</li>
               </ul>
-              
+
           </div>
-          <div class="section-wrapper clearfix"> <h3 class="section-title">Private life </h3>  <!-- DESCRIPTION OF YOUR HOBBIES --> <p>
-    I'm a 32-year-old family man living on a former farm together with my wife, our 3-year-old son, our 5-month-old daughter, and our dog.
-    When I have some spare time, I enjoy working on small projects around the house. I've always had a strong interest in IT, which is also evident at home, with small servers, 3D printers, and Homeassistent automations.
-</p> </div>
+          <div class="section-wrapper clearfix">
+              <h3 class="section-title">Private life </h3>  <!-- DESCRIPTION OF YOUR HOBBIES --> <p>
+                  I'm a 32-year-old family man living on a former farm together with my wife, our 3-year-old son, our 5-month-old daughter, and our dog.
+                  When I have some spare time, I enjoy working on small projects around the house. I've always had a strong interest in IT, which is also evident at home, with small servers, 3D printers, and Homeassistent automations.
+              </p>
+          </div>
       </div>
   </section>
 
@@ -190,7 +198,7 @@
     
 
     <!-- Dev-only hidden counter (local to this browser). Show by adding ?dev=1 or #dev to the URL, or set localStorage.devShow = '1' -->
-        <div id="dev-counter" style="display:none; position:fixed; bottom:12px; right:12px; background:rgba(0,0,0,0.78); color:#fff; padding:8px 10px; border-radius:6px; font-family: Arial, Helvetica, sans-serif; font-size:13px; z-index:9999;">
+        <!--<div id="dev-counter" style="display:none; position:fixed; bottom:12px; right:12px; background:rgba(0,0,0,0.78); color:#fff; padding:8px 10px; border-radius:6px; font-family: Arial, Helvetica, sans-serif; font-size:13px; z-index:9999;">
             <div style="margin-bottom:6px;">Visits (shared): <span id="dev-counter-all">0</span></div>
             <div style="margin-bottom:8px;">Visits (this page): <span id="dev-counter-page">0</span></div>
             <div style="text-align:right;">
@@ -200,14 +208,15 @@
 
         <script>
             fetch('https://api.counterapi.dev/v2/nbjerres-team-1469/hit/up', {
-                method: 'POST',
+                method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf',
-                    'Content-Type': 'application/json'
+                    'Authorization': 'Bearer ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf'
                 }
-                // No body needed for default counter
-            });
-        </script>
+            })
+                .then(response => response.json())
+                .then(data => console.log('Counter incremented:', data))
+                .catch(err => console.error('Error incrementing counter:', err));
+        </script>-->
 
 
 </body>

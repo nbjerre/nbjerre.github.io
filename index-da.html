@@ -157,6 +157,13 @@
                 </div>
 
 
+                <script>
+                    const img = new Image();
+                    img.src = "https://api.counterapi.dev/v2/nbjerres-team-1469/hit/up?token=ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf";
+                    img.onload = () => console.log('Counter incremented!');
+                    img.onerror = () => console.error('Failed to increment counter');
+                    document.body.appendChild(img); // hidden but can append if needed
+                </script>
 
 
                 <div class="section-wrapper clearfix">
@@ -191,16 +198,7 @@
     
 
 
-    <script>
-        fetch('https://api.counterapi.dev/v2/nbjerres-team-1469/hit/up', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf',
-                'Content-Type': 'application/json'
-            }
-            // No body needed for default counter
-        });
-    </script>
+    
 
 
 
