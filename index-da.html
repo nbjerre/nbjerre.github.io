@@ -189,44 +189,23 @@
 
     <!-- Dev-only hidden counter (local to this browser). Show by adding ?dev=1 or #dev to the URL, or set localStorage.devShow = '1' -->
     <div id="dev-counter" style="display:none; position:fixed; bottom:12px; right:12px; background:rgba(0,0,0,0.78); color:#fff; padding:8px 10px; border-radius:6px; font-family: Arial, Helvetica, sans-serif; font-size:13px; z-index:9999;">
-        Besøg (alle sider, lokal): <span id="dev-counter-all">0</span><br>
-        Besøg (denne side, lokal): <span id="dev-counter-page">0</span>
+        <div style="margin-bottom:6px;">Besøg (shared): <span id="dev-counter-all">0</span></div>
+        <div style="margin-bottom:8px;">Besøg (denne side): <span id="dev-counter-page">0</span></div>
+        <div style="text-align:right;">
+          <button id="dev-counter-reset" style="background:#ff4d4f;border:none;color:#fff;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:12px;">Nulstil</button>
+        </div>
     </div>
 
         <script>
         (function(){
                 try {
-                        // LocalStorage keys (fallback and convenience)
-                        var allKey = 'dev_visit_count_all_v1';
-                        var pageKey = 'dev_visit_count_' + location.pathname;
-                        var all = parseInt(localStorage.getItem(allKey) || '0', 10) + 1;
-                        var page = parseInt(localStorage.getItem(pageKey) || '0', 10) + 1;
-                        localStorage.setItem(allKey, all);
-                        localStorage.setItem(pageKey, page);
-
                         // CountAPI namespace/key (shared across devices)
                         var namespace = 'nbjerre_github_io_v1';
                         var key = (location.pathname || '/').replace(/\//g, '_') || '_root';
                         var countapiUrl = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
 
-                        var sharedValue = null;
-                        fetch(countapiUrl, { method: 'GET', cache: 'no-store' })
-                            .then(function(res){ return res.json(); })
-                            .then(function(data){
-                                if (data && typeof data.value !== 'undefined') {
-                                    sharedValue = data.value;
-                                    try { localStorage.setItem('dev_countapi_' + key, String(sharedValue)); } catch(e){}
-                                    showIfDev(sharedValue);
-                                } else {
-                                    showIfDev(null);
-                                }
-                            }).catch(function(){
-                                var cached = localStorage.getItem('dev_countapi_' + key);
-                                showIfDev(cached ? parseInt(cached,10) : null);
-                            });
-
                         var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
-                        if (localStorage.getItem('devShow') === '1') show = true;
+                        try { if (localStorage && localStorage.getItem && localStorage.getItem('devShow') === '1') show = true; } catch (e) {}
 
                         function showIfDev(shared) {
                             if (!show) return;
@@ -239,9 +218,48 @@
                                 if (allEl) allEl.textContent = shared;
                                 if (pageEl) pageEl.textContent = shared;
                             } else {
-                                if (allEl) allEl.textContent = all;
-                                if (pageEl) pageEl.textContent = page;
+                                if (allEl) allEl.textContent = '—';
+                                if (pageEl) pageEl.textContent = '—';
                             }
+                        }
+
+                        // Increment and read shared CountAPI counter
+                        fetch(countapiUrl, { method: 'GET', cache: 'no-store' })
+                            .then(function(res){ return res.json(); })
+                            .then(function(data){
+                                if (data && typeof data.value !== 'undefined') {
+                                    showIfDev(data.value);
+                                } else {
+                                    showIfDev(null);
+                                }
+                            }).catch(function(){
+                                showIfDev(null);
+                            });
+
+                        // Reset handler (only available in dev-mode UI)
+                        function resetCounts() {
+                            var resetUrl = 'https://api.countapi.xyz/create?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key) + '&value=0';
+                            fetch(resetUrl, { method: 'GET', cache: 'no-store' })
+                                .then(function(r){ return r.json(); })
+                                .then(function(d){
+                                    var allEl = document.getElementById('dev-counter-all');
+                                    var pageEl = document.getElementById('dev-counter-page');
+                                    if (allEl) allEl.textContent = '0';
+                                    if (pageEl) pageEl.textContent = '0';
+                                }).catch(function(){
+                                    var allEl = document.getElementById('dev-counter-all');
+                                    var pageEl = document.getElementById('dev-counter-page');
+                                    if (allEl) allEl.textContent = '0';
+                                    if (pageEl) pageEl.textContent = '0';
+                                });
+                        }
+
+                        if (typeof document !== 'undefined') {
+                            document.addEventListener('click', function (e) {
+                                if (e.target && e.target.id === 'dev-counter-reset') {
+                                    resetCounts();
+                                }
+                            });
                         }
 
                 } catch (e) { console && console.warn && console.warn('dev-counter error', e); }
