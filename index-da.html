@@ -185,7 +185,43 @@
   <div class="clearfix"></div>
 </div>
 <!-- partial -->
-  <script src='//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js'></script><script  src="./script.js"></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js'></script><script  src="./script.js"></script>
+
+    <!-- Dev-only hidden counter (local to this browser). Show by adding ?dev=1 or #dev to the URL, or set localStorage.devShow = '1' -->
+    <div id="dev-counter" style="display:none; position:fixed; bottom:12px; right:12px; background:rgba(0,0,0,0.78); color:#fff; padding:8px 10px; border-radius:6px; font-family: Arial, Helvetica, sans-serif; font-size:13px; z-index:9999;">
+        Besøg (alle sider, lokal): <span id="dev-counter-all">0</span><br>
+        Besøg (denne side, lokal): <span id="dev-counter-page">0</span>
+    </div>
+
+    <script>
+    (function(){
+        try {
+            var allKey = 'dev_visit_count_all_v1';
+            var pageKey = 'dev_visit_count_' + location.pathname;
+            var all = parseInt(localStorage.getItem(allKey) || '0', 10) + 1;
+            var page = parseInt(localStorage.getItem(pageKey) || '0', 10) + 1;
+            localStorage.setItem(allKey, all);
+            localStorage.setItem(pageKey, page);
+
+            var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
+
+            // If developer explicitly set devShow in localStorage, show the counter too
+            if (localStorage.getItem('devShow') === '1') show = true;
+
+            if (show) {
+                var el = document.getElementById('dev-counter');
+                if (el) {
+                    el.style.display = 'block';
+                    var allEl = document.getElementById('dev-counter-all');
+                    var pageEl = document.getElementById('dev-counter-page');
+                    if (allEl) allEl.textContent = all;
+                    if (pageEl) pageEl.textContent = page;
+                }
+            }
+            // If hidden, counts still increment in localStorage — open with ?dev=1 to view.
+        } catch (e) { console && console.warn && console.warn('dev-counter error', e); }
+    })();
+    </script>
 
 </body>
 </html>
