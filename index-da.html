@@ -196,75 +196,82 @@
         </div>
     </div>
 
-        <script>
-        (function(){
-                try {
-                        // CountAPI namespace/key (shared across devices)
-                        var namespace = 'nbjerre_github_io_v1';
-                        var key = (location.pathname || '/').replace(/\//g, '_') || '_root';
-                        var countapiUrl = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
+            <script>
+            (function(){
+                    try {
+                            // CountAPI namespace/key (shared across devices)
+                            var namespace = 'nbjerre_github_io_v1';
+                            var host = (location.hostname && location.hostname.length) ? location.hostname : 'local';
+                            var path = (location.pathname && location.pathname.length) ? location.pathname : '/';
+                            var rawKey = host + path;
+                            var key = rawKey.replace(/[^a-zA-Z0-9-_\.]/g, '_');
+                            // PROXY_BASE: default is CountAPI; replace with your worker URL (e.g. https://your-worker.workers.dev)
+                            var PROXY_BASE = 'https://api.countapi.xyz';
+                            var countapiUrl = PROXY_BASE + '/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
 
-                        var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
-                        try { if (localStorage && localStorage.getItem && localStorage.getItem('devShow') === '1') show = true; } catch (e) {}
+                            var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
+                            try { if (localStorage && localStorage.getItem && localStorage.getItem('devShow') === '1') show = true; } catch (e) {}
 
-                        function showIfDev(shared) {
-                            if (!show) return;
-                            var el = document.getElementById('dev-counter');
-                            if (!el) return;
-                            el.style.display = 'block';
-                            var allEl = document.getElementById('dev-counter-all');
-                            var pageEl = document.getElementById('dev-counter-page');
-                            if (shared !== null && typeof shared !== 'undefined') {
-                                if (allEl) allEl.textContent = shared;
-                                if (pageEl) pageEl.textContent = shared;
-                            } else {
-                                if (allEl) allEl.textContent = '—';
-                                if (pageEl) pageEl.textContent = '—';
+                            function setPanel(value, errMsg) {
+                                if (!show) return;
+                                var el = document.getElementById('dev-counter');
+                                if (!el) return;
+                                el.style.display = 'block';
+                                var allEl = document.getElementById('dev-counter-all');
+                                var pageEl = document.getElementById('dev-counter-page');
+                                if (allEl) allEl.textContent = (value !== null && typeof value !== 'undefined') ? value : '—';
+                                if (pageEl) pageEl.textContent = (value !== null && typeof value !== 'undefined') ? value : '—';
+                                var errEl = document.getElementById('dev-counter-err');
+                                if (!errEl) {
+                                    errEl = document.createElement('div');
+                                    errEl.id = 'dev-counter-err';
+                                    errEl.style.color = '#f8d7da';
+                                    errEl.style.fontSize = '11px';
+                                    errEl.style.marginTop = '6px';
+                                    el.appendChild(errEl);
+                                }
+                                errEl.textContent = errMsg ? ('Fejl: ' + errMsg) : '';
                             }
-                        }
 
-                        // Increment and read shared CountAPI counter
-                        fetch(countapiUrl, { method: 'GET', cache: 'no-store' })
-                            .then(function(res){ return res.json(); })
-                            .then(function(data){
-                                if (data && typeof data.value !== 'undefined') {
-                                    showIfDev(data.value);
-                                } else {
-                                    showIfDev(null);
-                                }
-                            }).catch(function(){
-                                showIfDev(null);
-                            });
+                            // Increment and read shared CountAPI counter
+                            fetch(countapiUrl, { method: 'GET', cache: 'no-store', mode: 'cors' })
+                                .then(function(res){ return res.json(); })
+                                .then(function(data){
+                                    if (data && typeof data.value !== 'undefined') {
+                                        setPanel(data.value);
+                                    } else {
+                                        setPanel(null, 'no value returned');
+                                    }
+                                                }).catch(function(err){
+                                                    console.warn('CountAPI fetch failed', err);
+                                                    setPanel(null, String(err) + ' (key=' + key + ', proxy=' + PROXY_BASE + ')');
+                                                });
 
-                        // Reset handler (only available in dev-mode UI)
-                        function resetCounts() {
-                            var resetUrl = 'https://api.countapi.xyz/create?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key) + '&value=0';
-                            fetch(resetUrl, { method: 'GET', cache: 'no-store' })
-                                .then(function(r){ return r.json(); })
-                                .then(function(d){
-                                    var allEl = document.getElementById('dev-counter-all');
-                                    var pageEl = document.getElementById('dev-counter-page');
-                                    if (allEl) allEl.textContent = '0';
-                                    if (pageEl) pageEl.textContent = '0';
-                                }).catch(function(){
-                                    var allEl = document.getElementById('dev-counter-all');
-                                    var pageEl = document.getElementById('dev-counter-page');
-                                    if (allEl) allEl.textContent = '0';
-                                    if (pageEl) pageEl.textContent = '0';
+                            // Reset handler (only available in dev-mode UI)
+                                        function resetCounts() {
+                                            var resetUrl = PROXY_BASE + '/create?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key) + '&value=0';
+                                            fetch(resetUrl, { method: 'GET', cache: 'no-store', mode: 'cors' })
+                                    .then(function(r){ return r.json(); })
+                                    .then(function(d){
+                                        setPanel(0);
+                                    }).catch(function(err){
+                                        console.warn('CountAPI reset failed', err);
+                                        setPanel(null, String(err));
+                                    });
+                            }
+
+                            if (typeof document !== 'undefined') {
+                                document.addEventListener('click', function (e) {
+                                    if (e.target && e.target.id === 'dev-counter-reset') {
+                                        if (!confirm('Nulstil tæller for denne side til 0?')) return;
+                                        resetCounts();
+                                    }
                                 });
-                        }
+                            }
 
-                        if (typeof document !== 'undefined') {
-                            document.addEventListener('click', function (e) {
-                                if (e.target && e.target.id === 'dev-counter-reset') {
-                                    resetCounts();
-                                }
-                            });
-                        }
-
-                } catch (e) { console && console.warn && console.warn('dev-counter error', e); }
-        })();
-        </script>
+                    } catch (e) { console && console.warn && console.warn('dev-counter error', e); }
+            })();
+            </script>
 
 </body>
 </html>

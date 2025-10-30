@@ -208,7 +208,9 @@
                         var path = (location.pathname && location.pathname.length) ? location.pathname : '/';
                         var rawKey = host + path;
                         var key = rawKey.replace(/[^a-zA-Z0-9-_\.]/g, '_');
-                        var countapiUrl = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
+                        // PROXY_BASE: default is CountAPI; replace with your worker URL (e.g. https://your-worker.workers.dev)
+                        var PROXY_BASE = 'https://api.countapi.xyz';
+                        var countapiUrl = PROXY_BASE + '/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
 
                         var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
                         try { if (localStorage && localStorage.getItem && localStorage.getItem('devShow') === '1') show = true; } catch (e) {}
@@ -245,12 +247,13 @@
                                 }
                             }).catch(function(err){
                                 console.warn('CountAPI fetch failed', err);
-                                setPanel(null, String(err));
+                                // Show helpful debug info (key + proxy base) so you can verify DNS/worker config
+                                setPanel(null, String(err) + ' (key=' + key + ', proxy=' + PROXY_BASE + ')');
                             });
 
                         // Reset handler (only available in dev-mode UI)
                         function resetCounts() {
-                            var resetUrl = 'https://api.countapi.xyz/create?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key) + '&value=0';
+                            var resetUrl = PROXY_BASE + '/create?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key) + '&value=0';
                             fetch(resetUrl, { method: 'GET', cache: 'no-store', mode: 'cors' })
                                 .then(function(r){ return r.json(); })
                                 .then(function(d){
