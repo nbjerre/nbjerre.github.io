@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-  <title>Responsive Resume Template</title>
-  <meta name="viewport" content="width=device-width"><link rel="stylesheet" href="https://public.codepenassets.com/css/reset-2.0.min.css">
-<link rel="stylesheet" href="./style.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Responsive Resume Template</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://public.codepenassets.com/css/reset-2.0.min.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8N360L7BXJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-8N360L7BXJ');
+    </script>
+    <link rel="stylesheet" href="./style.css">
 
 </head>
 <body>
@@ -156,13 +166,7 @@
               </div>
           </div>
 
-          <script>
-              const img = new Image();
-              img.src = "https://api.counterapi.dev/v2/nbjerres-team-1469/hit/up?token=ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf";
-              img.onload = () => console.log('Counter incremented!');
-              img.onerror = () => console.error('Failed to increment counter');
-              document.body.appendChild(img); // hidden but can append if needed
-          </script>
+        
 
 
           <div class="section-wrapper clearfix">
@@ -194,29 +198,6 @@
   
   <div class="clearfix"></div>
 </div>
-<!-- partial -->
-    
-
-    <!-- Dev-only hidden counter (local to this browser). Show by adding ?dev=1 or #dev to the URL, or set localStorage.devShow = '1' -->
-        <!--<div id="dev-counter" style="display:none; position:fixed; bottom:12px; right:12px; background:rgba(0,0,0,0.78); color:#fff; padding:8px 10px; border-radius:6px; font-family: Arial, Helvetica, sans-serif; font-size:13px; z-index:9999;">
-            <div style="margin-bottom:6px;">Visits (shared): <span id="dev-counter-all">0</span></div>
-            <div style="margin-bottom:8px;">Visits (this page): <span id="dev-counter-page">0</span></div>
-            <div style="text-align:right;">
-                <button id="dev-counter-reset" style="background:#ff4d4f;border:none;color:#fff;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:12px;">Reset</button>
-            </div>
-        </div>
-
-        <script>
-            fetch('https://api.counterapi.dev/v2/nbjerres-team-1469/hit/up', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ut_Ekj7REEialZmuagOzB5GEfUY2GHOxXZQMoXk5KIf'
-                }
-            })
-                .then(response => response.json())
-                .then(data => console.log('Counter incremented:', data))
-                .catch(err => console.error('Error incrementing counter:', err));
-        </script>-->
 
 
 </body>
