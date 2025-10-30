@@ -198,78 +198,45 @@
 
             <script>
             (function(){
-                    try {
-                            // CountAPI namespace/key (shared across devices)
-                            var namespace = 'nbjerre_github_io_v1';
-                            var host = (location.hostname && location.hostname.length) ? location.hostname : 'local';
-                            var path = (location.pathname && location.pathname.length) ? location.pathname : '/';
-                            var rawKey = host + path;
-                            var key = rawKey.replace(/[^a-zA-Z0-9-_\.]/g, '_');
-                            // PROXY_BASE: default is CountAPI; replace with your worker URL (e.g. https://your-worker.workers.dev)
-                            var PROXY_BASE = "https://nbjerre-counter.yourname.workers.dev";
-                            var countapiUrl = PROXY_BASE + '/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
+            try {
+                var namespace = 'nbjerre_cv_counter_v1';
+                var path = location.pathname.replace(/[^a-zA-Z0-9-_\.]/g, '_') || 'home';
+                var key = namespace + '_' + path;
+                var url = 'https://api.countapi.xyz/hit/' + key;
 
-                            var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
-                            try { if (localStorage && localStorage.getItem && localStorage.getItem('devShow') === '1') show = true; } catch (e) {}
+                var show = (new URLSearchParams(location.search).get('dev') === '1') ||
+                        location.hash === '#dev' ||
+                        (localStorage.getItem('devShow') === '1');
 
-                            function setPanel(value, errMsg) {
-                                if (!show) return;
-                                var el = document.getElementById('dev-counter');
-                                if (!el) return;
-                                el.style.display = 'block';
-                                var allEl = document.getElementById('dev-counter-all');
-                                var pageEl = document.getElementById('dev-counter-page');
-                                if (allEl) allEl.textContent = (value !== null && typeof value !== 'undefined') ? value : '—';
-                                if (pageEl) pageEl.textContent = (value !== null && typeof value !== 'undefined') ? value : '—';
-                                var errEl = document.getElementById('dev-counter-err');
-                                if (!errEl) {
-                                    errEl = document.createElement('div');
-                                    errEl.id = 'dev-counter-err';
-                                    errEl.style.color = '#f8d7da';
-                                    errEl.style.fontSize = '11px';
-                                    errEl.style.marginTop = '6px';
-                                    el.appendChild(errEl);
-                                }
-                                errEl.textContent = errMsg ? ('Fejl: ' + errMsg) : '';
-                            }
+                function setPanel(value, errMsg) {
+                if (!show) return;
+                var el = document.getElementById('dev-counter');
+                el.style.display = 'block';
+                document.getElementById('dev-counter-all').textContent = value ?? '—';
+                document.getElementById('dev-counter-page').textContent = value ?? '—';
+                var errEl = document.getElementById('dev-counter-err');
+                if (!errEl) {
+                    errEl = document.createElement('div');
+                    errEl.id = 'dev-counter-err';
+                    errEl.style.color = '#f8d7da';
+                    errEl.style.fontSize = '11px';
+                    errEl.style.marginTop = '6px';
+                    el.appendChild(errEl);
+                }
+                errEl.textContent = errMsg ? ('Fejl: ' + errMsg) : '';
+                }
 
-                            // Increment and read shared CountAPI counter
-                            fetch(countapiUrl, { method: 'GET', cache: 'no-store', mode: 'cors' })
-                                .then(function(res){ return res.json(); })
-                                .then(function(data){
-                                    if (data && typeof data.value !== 'undefined') {
-                                        setPanel(data.value);
-                                    } else {
-                                        setPanel(null, 'no value returned');
-                                    }
-                                                }).catch(function(err){
-                                                    console.warn('CountAPI fetch failed', err);
-                                                    setPanel(null, String(err) + ' (key=' + key + ', proxy=' + PROXY_BASE + ')');
-                                                });
+                fetch(url)
+                .then(r => r.json())
+                .then(d => {
+                    if (d && typeof d.value !== 'undefined') setPanel(d.value);
+                    else setPanel(null, 'No value returned');
+                })
+                .catch(err => setPanel(null, err.message));
 
-                            // Reset handler (only available in dev-mode UI)
-                                        function resetCounts() {
-                                            var resetUrl = PROXY_BASE + '/create?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key) + '&value=0';
-                                            fetch(resetUrl, { method: 'GET', cache: 'no-store', mode: 'cors' })
-                                    .then(function(r){ return r.json(); })
-                                    .then(function(d){
-                                        setPanel(0);
-                                    }).catch(function(err){
-                                        console.warn('CountAPI reset failed', err);
-                                        setPanel(null, String(err));
-                                    });
-                            }
-
-                            if (typeof document !== 'undefined') {
-                                document.addEventListener('click', function (e) {
-                                    if (e.target && e.target.id === 'dev-counter-reset') {
-                                        if (!confirm('Nulstil tæller for denne side til 0?')) return;
-                                        resetCounts();
-                                    }
-                                });
-                            }
-
-                    } catch (e) { console && console.warn && console.warn('dev-counter error', e); }
+            } catch (e) {
+                console.warn('Counter error', e);
+            }
             })();
             </script>
 
