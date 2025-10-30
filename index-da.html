@@ -206,7 +206,7 @@
                             var rawKey = host + path;
                             var key = rawKey.replace(/[^a-zA-Z0-9-_\.]/g, '_');
                             // PROXY_BASE: default is CountAPI; replace with your worker URL (e.g. https://your-worker.workers.dev)
-                            var PROXY_BASE = 'https://api.countapi.xyz';
+                            var PROXY_BASE = "https://nbjerre-counter.yourname.workers.dev";
                             var countapiUrl = PROXY_BASE + '/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
 
                             var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
