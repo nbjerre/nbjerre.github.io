@@ -203,56 +203,61 @@
                 try {
                         // CountAPI namespace/key (shared across devices)
                         var namespace = 'nbjerre_github_io_v1';
-                        var key = (location.pathname || '/').replace(/\//g, '_') || '_root';
+                        // Build a stable key: prefer hostname+pathname so it works across file:// and hosted
+                        var host = (location.hostname && location.hostname.length) ? location.hostname : 'local';
+                        var path = (location.pathname && location.pathname.length) ? location.pathname : '/';
+                        var rawKey = host + path;
+                        var key = rawKey.replace(/[^a-zA-Z0-9-_\.]/g, '_');
                         var countapiUrl = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
 
                         var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
                         try { if (localStorage && localStorage.getItem && localStorage.getItem('devShow') === '1') show = true; } catch (e) {}
 
-                        function showIfDev(shared) {
-                            if (!show) return; // only show counter in dev-mode
+                        function setPanel(value, errMsg) {
+                            if (!show) return;
                             var el = document.getElementById('dev-counter');
                             if (!el) return;
                             el.style.display = 'block';
                             var allEl = document.getElementById('dev-counter-all');
                             var pageEl = document.getElementById('dev-counter-page');
-                            if (shared !== null && typeof shared !== 'undefined') {
-                                if (allEl) allEl.textContent = shared;
-                                if (pageEl) pageEl.textContent = shared;
-                            } else {
-                                if (allEl) allEl.textContent = '—';
-                                if (pageEl) pageEl.textContent = '—';
+                            if (allEl) allEl.textContent = (value !== null && typeof value !== 'undefined') ? value : '—';
+                            if (pageEl) pageEl.textContent = (value !== null && typeof value !== 'undefined') ? value : '—';
+                            var errEl = document.getElementById('dev-counter-err');
+                            if (!errEl) {
+                                errEl = document.createElement('div');
+                                errEl.id = 'dev-counter-err';
+                                errEl.style.color = '#f8d7da';
+                                errEl.style.fontSize = '11px';
+                                errEl.style.marginTop = '6px';
+                                el.appendChild(errEl);
                             }
+                            errEl.textContent = errMsg ? ('Error: ' + errMsg) : '';
                         }
 
                         // Increment and read shared CountAPI counter
-                        fetch(countapiUrl, { method: 'GET', cache: 'no-store' })
+                        fetch(countapiUrl, { method: 'GET', cache: 'no-store', mode: 'cors' })
                             .then(function(res){ return res.json(); })
                             .then(function(data){
                                 if (data && typeof data.value !== 'undefined') {
-                                    showIfDev(data.value);
+                                    setPanel(data.value);
                                 } else {
-                                    showIfDev(null);
+                                    setPanel(null, 'no value returned');
                                 }
-                            }).catch(function(){
-                                showIfDev(null);
+                            }).catch(function(err){
+                                console.warn('CountAPI fetch failed', err);
+                                setPanel(null, String(err));
                             });
 
                         // Reset handler (only available in dev-mode UI)
                         function resetCounts() {
                             var resetUrl = 'https://api.countapi.xyz/create?namespace=' + encodeURIComponent(namespace) + '&key=' + encodeURIComponent(key) + '&value=0';
-                            fetch(resetUrl, { method: 'GET', cache: 'no-store' })
+                            fetch(resetUrl, { method: 'GET', cache: 'no-store', mode: 'cors' })
                                 .then(function(r){ return r.json(); })
                                 .then(function(d){
-                                    var allEl = document.getElementById('dev-counter-all');
-                                    var pageEl = document.getElementById('dev-counter-page');
-                                    if (allEl) allEl.textContent = '0';
-                                    if (pageEl) pageEl.textContent = '0';
-                                }).catch(function(){
-                                    var allEl = document.getElementById('dev-counter-all');
-                                    var pageEl = document.getElementById('dev-counter-page');
-                                    if (allEl) allEl.textContent = '0';
-                                    if (pageEl) pageEl.textContent = '0';
+                                    setPanel(0);
+                                }).catch(function(err){
+                                    console.warn('CountAPI reset failed', err);
+                                    setPanel(null, String(err));
                                 });
                         }
 
@@ -260,6 +265,7 @@
                         if (typeof document !== 'undefined') {
                             document.addEventListener('click', function (e) {
                                 if (e.target && e.target.id === 'dev-counter-reset') {
+                                    if (!confirm('Reset CountAPI counter for this page to 0?')) return;
                                     resetCounts();
                                 }
                             });
