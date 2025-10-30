@@ -193,35 +193,60 @@
         Besøg (denne side, lokal): <span id="dev-counter-page">0</span>
     </div>
 
-    <script>
-    (function(){
-        try {
-            var allKey = 'dev_visit_count_all_v1';
-            var pageKey = 'dev_visit_count_' + location.pathname;
-            var all = parseInt(localStorage.getItem(allKey) || '0', 10) + 1;
-            var page = parseInt(localStorage.getItem(pageKey) || '0', 10) + 1;
-            localStorage.setItem(allKey, all);
-            localStorage.setItem(pageKey, page);
+        <script>
+        (function(){
+                try {
+                        // LocalStorage keys (fallback and convenience)
+                        var allKey = 'dev_visit_count_all_v1';
+                        var pageKey = 'dev_visit_count_' + location.pathname;
+                        var all = parseInt(localStorage.getItem(allKey) || '0', 10) + 1;
+                        var page = parseInt(localStorage.getItem(pageKey) || '0', 10) + 1;
+                        localStorage.setItem(allKey, all);
+                        localStorage.setItem(pageKey, page);
 
-            var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
+                        // CountAPI namespace/key (shared across devices)
+                        var namespace = 'nbjerre_github_io_v1';
+                        var key = (location.pathname || '/').replace(/\//g, '_') || '_root';
+                        var countapiUrl = 'https://api.countapi.xyz/hit/' + encodeURIComponent(namespace) + '/' + encodeURIComponent(key);
 
-            // If developer explicitly set devShow in localStorage, show the counter too
-            if (localStorage.getItem('devShow') === '1') show = true;
+                        var sharedValue = null;
+                        fetch(countapiUrl, { method: 'GET', cache: 'no-store' })
+                            .then(function(res){ return res.json(); })
+                            .then(function(data){
+                                if (data && typeof data.value !== 'undefined') {
+                                    sharedValue = data.value;
+                                    try { localStorage.setItem('dev_countapi_' + key, String(sharedValue)); } catch(e){}
+                                    showIfDev(sharedValue);
+                                } else {
+                                    showIfDev(null);
+                                }
+                            }).catch(function(){
+                                var cached = localStorage.getItem('dev_countapi_' + key);
+                                showIfDev(cached ? parseInt(cached,10) : null);
+                            });
 
-            if (show) {
-                var el = document.getElementById('dev-counter');
-                if (el) {
-                    el.style.display = 'block';
-                    var allEl = document.getElementById('dev-counter-all');
-                    var pageEl = document.getElementById('dev-counter-page');
-                    if (allEl) allEl.textContent = all;
-                    if (pageEl) pageEl.textContent = page;
-                }
-            }
-            // If hidden, counts still increment in localStorage — open with ?dev=1 to view.
-        } catch (e) { console && console.warn && console.warn('dev-counter error', e); }
-    })();
-    </script>
+                        var show = (new URLSearchParams(location.search).get('dev') === '1') || location.hash === '#dev';
+                        if (localStorage.getItem('devShow') === '1') show = true;
+
+                        function showIfDev(shared) {
+                            if (!show) return;
+                            var el = document.getElementById('dev-counter');
+                            if (!el) return;
+                            el.style.display = 'block';
+                            var allEl = document.getElementById('dev-counter-all');
+                            var pageEl = document.getElementById('dev-counter-page');
+                            if (shared !== null && typeof shared !== 'undefined') {
+                                if (allEl) allEl.textContent = shared;
+                                if (pageEl) pageEl.textContent = shared;
+                            } else {
+                                if (allEl) allEl.textContent = all;
+                                if (pageEl) pageEl.textContent = page;
+                            }
+                        }
+
+                } catch (e) { console && console.warn && console.warn('dev-counter error', e); }
+        })();
+        </script>
 
 </body>
 </html>
